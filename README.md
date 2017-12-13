@@ -23,6 +23,6 @@ SendFire DB Setup for Development
 SQL Express using the default installation local on the local host `.\sqlexpress` is expected using the default connection string settings in the application. If you don't want to use this you will need to modify your local copy of the appsettings.json accordingly.
 
 1. Setup a blank *SendFire* database in SQL Management Studio.
-<img src="https://github.com/SendFire/SendFire/blob/master/SendFire.Docs/images/1-CreateBlankSendFireDBSQLExpress.PNG" alt="SendFire DB" style="width: 50px;" />
+<img src="https://github.com/SendFire/SendFire/blob/master/SendFire.Docs/images/1-CreateBlankSendFireDBSQLExpress.PNG" alt="SendFire DB" style="max-width: 50px;" />
 2. Create a *SendFire* user using the following settings. The users default password is `SendFire2017#!`.
 
