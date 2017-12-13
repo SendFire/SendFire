@@ -1,0 +1,40 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "project": {
+    "name": "sf-app"
+  },
+  "apps": [
+    {
+      "root": "ClientApp",
+      "outDir": "./wwwroot/clientapp/out-tsc",
+      "main": "app.shared.module.ts",
+      "prefix": "sf"      
+    }
+  ],
+  "defaults": {
+    "styleExt": "scss",
+    "class": {
+      "spec": false
+    },
+    "component": {
+      "inlineStyle": false,
+      "inlineTemplate": false,
+      "spec": false
+    },
+    "directive": {
+      "spec": false
+    },
+    "guard": {
+      "spec": false
+    },
+    "module": {
+      "spec": false
+    },
+    "pipe": {
+      "spec": false
+    },
+    "service": {
+      "spec": false
+    }
+  }
+}
