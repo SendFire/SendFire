@@ -29,5 +29,6 @@ SQL Express using the default installation local on the local host `.\sqlexpress
 2. Create a **SendFire** user using the following settings. The users default password is `SendFire2017#!`.
 
 ![SendFire User Settings](./SendFire.Docs/images/2-SetupSQLExpressUser.PNG)
+
 ![SendFire User DB Access](./SendFire.Docs/images/3-SetupSQLExpressDBAccess.PNG)
 
