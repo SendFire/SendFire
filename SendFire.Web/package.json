@@ -7,7 +7,8 @@
     "build:tsd": "webpack --config webpack.config.vendor.js --env.dev && webpack --config webpack.config.js --env.dev",
     "build:tsp": "webpack --config webpack.config.vendor.js -p --env.prod && webpack --config webpack.config.js -p --env.prod",
     "build:css": "node-sass ClientApp/app/scss/application.scss wwwroot/application.css",
-    "watch:css": "node-sass -w ClientApp/app/scss/application.scss wwwroot/application.css"
+    "watch:css": "node-sass -w ClientApp/app/scss/application.scss wwwroot/application.css",
+    "run:local": "export ASPNETCORE_ENVIRONMENT=Local && dotnet watch run"
   },
   "devDependencies": {
     "@angular/animations": "4.2.5",
