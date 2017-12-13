@@ -6,7 +6,7 @@ SendFire is two components:
 2. A .NET Core 2.0 Windows Service which runs locally on all servers that you wish to become nodes on your network that can be controlled by the SendFire Administration Portal.
 
 Developer Information
-=====================
+---------------------
 SendFire Requires the following programs to be installed for local Development:
 1. [SQL Server Express 2017](https://www.microsoft.com/en-us/sql-server/sql-server-editions-express) for the Hangfire / SendFire Job and Node information Storage.
 2. [.NET Core SDK](https://www.microsoft.com/net/download/windows), 2.1.2 or above recommended.
@@ -19,7 +19,7 @@ To run a local developement environment of Sendfire in Visual Studio Code, open 
 3. `dotnet watch run` will build and run the local web aministration portal.
 
 SendFire DB Setup for Development
-=================================
+---------------------------------
 SQL Express using the default installation local on the local host `.\sqlexpress` is expected using the default connection string settings in the application. If you don't want to use this you will need to modify your local copy of the appsettings.json accordingly.
 
 1. Setup a blank **SendFire** database in SQL Management Studio.
