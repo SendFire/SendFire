@@ -28,11 +28,11 @@ If you intend to use the default authentication setup in the connection string, 
 
 1. Using SQL Management Studio, log in to the local `.\sqlexpress` installation as an administrator, right click on the server and select *Properties*.
 
-![Server Properties](./SendFire.Docs/images/1-SQLExpressProperties.PNG)
+![Server Properties](./SendFire.Docs/images/1-SQLExpressProperties.png)
 
 2. Go the the *Security* tab and verify or set authentication like this:
 
-![Mixed Mode Authentication](./SendFire.Docs/images/2-MixedModeAuth.PNG)
+![Mixed Mode Authentication](./SendFire.Docs/images/2-MixedModeAuth.png)
 
 SendFire DB and User Setup for Development
 ------------------------------------------
