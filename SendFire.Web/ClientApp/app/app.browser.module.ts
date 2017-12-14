@@ -1,12 +1,15 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 import { AppModuleShared } from './app.shared.module';
-import { AppComponent } from './components/app/app.component';
+import { AppComponent } from './app.component';
 
 @NgModule({
     bootstrap: [ AppComponent ],
     imports: [
         BrowserModule,
+        BrowserAnimationsModule,
         AppModuleShared
     ],
     providers: [
