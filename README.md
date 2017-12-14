@@ -2,8 +2,8 @@
 A .NET Core Based Server Deployment and Command Execution System that uses a fork of [Hangfire](http://github.com/HangfireIO/Hangfire) for its Scheduling Engine
 
 SendFire is two components:
-1. An ASP.NET Core 2.0 Administration Web Portal that allows for administration of Nodes in your network.
-2. A .NET Core 2.0 Windows Service which runs locally on all servers that you wish to become nodes on your network that can be controlled by the SendFire Administration Portal.
+1. An ASP.NET Core 2.0 Administration Web Portal that allows for administration of servers in your network.
+2. A .NET Core 2.0 Service Agent which runs locally on all servers that you wish to become nodes on your network that can have commands sent to them by the SendFire Administration Portal.
 
 Developer Information
 ---------------------
