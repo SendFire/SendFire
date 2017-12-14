@@ -7,11 +7,13 @@ import { RouterModule, PreloadAllModules } from '@angular/router';
 import { ROUTES } from './app.routes';
 import { AppComponent } from './app.component';
 import { ErrorComponent } from "./error/error.component";
+import { TopnavComponent } from './components/topnav/topnav.component';
 
 @NgModule({
     declarations: [
         AppComponent,
-        ErrorComponent
+        ErrorComponent,
+        TopnavComponent,
     ],
     imports: [
         CommonModule,
