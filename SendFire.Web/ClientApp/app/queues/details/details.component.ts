@@ -18,7 +18,6 @@ export class DetailsComponent {
   details: any;
   private id: string;
   ngOnInit() {
-    console.log("hi")
     this.route.params
       .subscribe((params: Params) => {
         this.service.getDetails(params['id']).subscribe(details => this.details = details);
