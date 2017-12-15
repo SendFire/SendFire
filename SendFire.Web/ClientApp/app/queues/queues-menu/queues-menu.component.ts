@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { QueuesService } from '../../services/queues.service';
 
 @Component({
     selector: 'queues-menu',
@@ -6,18 +7,14 @@ import { Component } from '@angular/core';
     styleUrls: ['./queues-menu.component.css']
 })
 export class QueuesMenuComponent {
-    queues = [
-        {
-            name: 'Server 1',
-            list: ['queue 1', 'queue 2']
-        },
-        {
-            name: 'Server 2',
-            list: ['queue 1', 'queue 2']
-        },
-        {
-            name: 'Server 3',
-            list: ['queue 1', 'queue 2']
-        }
-    ];
+
+    constructor(private _queuesService: QueuesService){
+    }
+    queues = [];
+
+    ngOnInit() {
+        this._queuesService.getQueues().subscribe(data => {
+            this.queues = data.map((q: any) => { q.heading = `${q.name} (${q.jobCount})`; return q; });
+        });
+    }
 }

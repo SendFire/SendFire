@@ -1,1 +1,12 @@
-<h1>127.0.0.1</h1>
+<div class="counts-container" >
+    <div class="count" *ngFor="let count of counts">
+        <label>{{count.label}}</label>
+        {{count.count}}
+    </div>
+</div>
+
+<div class="enqueue-command-container">
+    <label>Command</label>
+    <input type="text" name="command" [(ngModel)]="command" />
+    <button class="btn btn-default" (click)="enqueueCommand($event)">Enqueue</button> 
+</div>

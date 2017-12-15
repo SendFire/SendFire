@@ -8,6 +8,8 @@ import { ROUTES } from './app.routes';
 import { AppComponent } from './app.component';
 import { ErrorComponent } from "./error/error.component";
 import { TopnavComponent } from './components/topnav/topnav.component';
+import { JobService } from './services/job.service';
+import { QueuesService } from './services/queues.service';
 
 @NgModule({
     declarations: [
@@ -23,7 +25,8 @@ import { TopnavComponent } from './components/topnav/topnav.component';
             useHash: true,
             preloadingStrategy: PreloadAllModules
         })
-    ]
+    ],
+    providers: [JobService, QueuesService]
 })
 export class AppModuleShared {
 }

@@ -1,0 +1,21 @@
+.counts-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    .count {
+        background: #323b44;
+        color: #fff;
+        text-align: center;
+        margin: 0 1em;
+        padding: .5em;
+        label {
+            display: block;
+        }
+    }
+}
+
+.enqueue-command-container {
+    margin: .5em;
+    padding: 1em;
+    border: 1px solid #323b44;
+}
