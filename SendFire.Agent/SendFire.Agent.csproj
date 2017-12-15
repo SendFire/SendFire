@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DasMulli.Win32.ServiceUtils" Version="1.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.0.0" />
+    <PackageReference Include="microsoft.extensions.logging" Version="2.0.0" />
+    <PackageReference Include="microsoft.extensions.logging.console" Version="2.0.0" />
+    <PackageReference Include="microsoft.extensions.dependencyinjection" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SendFire.Common\SendFire.Common.csproj" />
+  </ItemGroup>
+
+</Project>
