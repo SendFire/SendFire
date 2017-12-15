@@ -1,0 +1,24 @@
+<div *ngIf="details">
+<h1>
+  #{{details.id}} {{details.name}}
+</h1>
+<div class="job-snippet">
+    <div class="job-snippet-code">
+        <pre><code [innerHTML]="details.job">
+</code></pre>
+    </div>
+
+    <!-- @if (job.Properties.Count > 0)
+    {
+        <div class="job-snippet-properties">
+            <dl>
+                @foreach (var property in job.Properties.Where(x => x.Key != "Continuations"))
+                {
+                    <dt>@property.Key</dt>
+                    <dd><pre><code>@property.Value</code></pre></dd>
+                }
+            </dl>
+        </div>
+    } -->
+</div>
+</div>

@@ -10,6 +10,7 @@ import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetchdata/fetchdata.component';
 import { HomeComponent } from './home/home.component';
 import { Accordion, AccordionGroup } from '../components/accordion/accordion.component';
+import { DetailsComponent } from './details/details.component';
 
 @NgModule({
   imports: [
@@ -24,7 +25,8 @@ import { Accordion, AccordionGroup } from '../components/accordion/accordion.com
       FetchDataComponent,
       HomeComponent,
       Accordion,
-      AccordionGroup
+      AccordionGroup,
+      DetailsComponent
   ]
 })
 export class QueuesModule { }

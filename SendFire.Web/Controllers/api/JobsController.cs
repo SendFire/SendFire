@@ -31,6 +31,7 @@ namespace SendFire.Web.Controllers
         }
 
     }
+    [Queue("queue101")]
     public static class JobJob {
         public static string DoJob(string say) {
             var test = "you don't " + say;

@@ -23,4 +23,9 @@ export class JobService {
     return this._http.post(`${this._platformLocation.location.origin}/api/jobs/enqueue`, {command: cmd})
   }
 
+  getDetails(id: string) {
+    return this._http.get(`${this._platformLocation.location.origin}/api/job/details/${id}`)
+    .map((res:Response) => res.json())
+  }
+
 }

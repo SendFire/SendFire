@@ -13,12 +13,16 @@ export class HomeComponent {
     counts: any[] = [];
     dashboardInterval:any = null;
     ngOnInit() {
+        this.updateDashboardCounts()
         this.dashboardInterval = window.setInterval(() => {
-            this._jobService.getDashboardCounts().subscribe(data => {
-                this.counts = data;
-            });
-        }, 2000);
-        
+            this.updateDashboardCounts();
+        }, 2000); 
+    }
+
+    updateDashboardCounts() {
+        return this._jobService.getDashboardCounts().subscribe(data => {
+            this.counts = data;
+        });
     }
 
     ngOnDestroy() {

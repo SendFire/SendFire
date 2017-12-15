@@ -1,9 +1,9 @@
 <div>
     {{what}}
     <sf-accordion>
-          <sf-accordion-group [heading]="queue.heading" *ngFor="let queue of queues">
+          <sf-accordion-group [heading]="queue.heading" [isOpen]="queue.isOpen" *ngFor="let queue of queues">
             <ul *ngFor="let item of queue.nextJobs">
-                <li>#{{item.id}} {{item.name}}</li>
+                <li><a href="#" (click)="goToDetails($event, item.id)">#{{item.id}}</a> {{item.name}}</li>
             </ul>
           </sf-accordion-group>
     </sf-accordion>
