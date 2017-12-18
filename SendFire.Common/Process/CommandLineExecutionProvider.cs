@@ -3,66 +3,222 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Collections.Generic;
 
 namespace SendFire.Common.Process
 {
     public class CommandLineExecutionProvider
     {
 
-        private CommandExecutionParamModel _commandLineModel;
+        public List<CommandExecutionParamModel> _commandLineModels;
+        private bool _runAsBatch;
         //public string ProcessOutput { get; set; }
-        public CommandLineExecutionProvider(string[] args) {
+        public CommandLineExecutionProvider(string[] args, bool runAsBatch) {
             if (args.Length < 1)
             {
-                throw new Exception("Can't process..");
+                throw new ArgumentException("No command line specified.");
             }
-            _commandLineModel = ParseArguments(args);
+            _runAsBatch = runAsBatch;
+            _commandLineModels = ParseArguments(args);
         }
 
-        private CommandExecutionParamModel ParseArguments(string[] args)
-        {   
-           
-            var model = new CommandExecutionParamModel();
+        private List<CommandExecutionParamModel> ParseArguments(string[] args)
+        {
+            _commandLineModels = new List<CommandExecutionParamModel>();
             for (int i = 0; i < args.Length; i++)
             {
-                Console.WriteLine("Command=>" + args[i]);
+                var model = new CommandExecutionParamModel();
+                if (args[i].IndexOf(" ") > 0)
+                {
+                    var index = args[i].IndexOf(' ');
+                   // var arguments = args[i].Split(' ');
+                    model.Command = args[i].Substring(0, index);
+                    model.Arguments = args[i].Substring(index);
+                }
+                else
+                {
+                    model.Command = args[i];
+                }
+                _commandLineModels.Add(model);
             }
 
-            if (args.Length > 0 && args[0].ContainsNoCase("-command"))
-            {
-                var commandArg = args[0].Split('=');
-                model.Command = commandArg[1];
-            }
-            if (args.Length > 1 && args[1].ContainsNoCase("-arguments"))
-            {
-                var commandArg = args[1].Split('=');
-                model.Arguments = commandArg[1];
-            }
-            if (args.Length > 2 && args[2].ContainsNoCase("-s"))
-            {
-
-                model.Arguments = $"%{model.Arguments}%";
-                model.IsSysCommand = true;
-             
-            }
-            Console.WriteLine("command=>" + model.Command);
-            Console.WriteLine("arguments=>" + model.Arguments);
-            return model;
+           
+            return _commandLineModels;
         }
 
         public string ProcessCommand()
         {
-            if (_commandLineModel.IsSysCommand)
+            if (_runAsBatch)
             {
                 return RunProcessForSystemCommand();
             }
             else
             {
-                return RunProcess();
+                //   return RunProcess();
+                return RunMultipleProcess();
             }
         }
 
-        private string RunProcess()
+        private string RunMultipleProcess()
+        {
+            var processStartInfos = new List<ProcessStartInfo>();
+            foreach(var command in _commandLineModels)
+            {
+                var processStartInfo = new ProcessStartInfo
+                {
+                    FileName = command.Command,
+                    Arguments = command.Arguments,
+                    CreateNoWindow = true,
+
+                    RedirectStandardOutput = true,
+                    RedirectStandardInput = true,
+                    RedirectStandardError = true,
+
+                    ErrorDialog = false,
+                    UseShellExecute = false
+                };
+
+                processStartInfos.Add(processStartInfo);
+            }
+            return RunProcesses(processStartInfos);
+  
+        }
+
+        private string RunProcesses(List<ProcessStartInfo> processStartInfos)
+        {
+            var outputBuilder = new StringBuilder();
+            try
+            {
+                foreach (var processInfo in processStartInfos)
+                {
+                    using (var process = new System.Diagnostics.Process())
+                    {
+                        //System.Diagnostics.Process process = new System.Diagnostics.Process();
+                        process.StartInfo = processInfo;
+                        // enable raising events because Process does not raise events by default
+                        process.EnableRaisingEvents = true;
+
+
+                        // attach the event handler for OutputDataReceived before starting the process
+                        process.OutputDataReceived += (sender, eventArgs) => outputBuilder.AppendLine(eventArgs.Data);
+                        process.ErrorDataReceived += (sender, eventArgs) => outputBuilder.AppendLine(eventArgs.Data);
+                        // start the process
+                        // then begin asynchronously reading the output
+                        // then wait for the process to exit
+                        // then cancel asynchronously reading the output
+                        process.Start();
+                        process.BeginOutputReadLine();
+                        process.BeginErrorReadLine();
+                        process.WaitForExit();
+                        process.CancelOutputRead();
+                    }
+                }
+
+                return outputBuilder.ToString();
+            }
+            catch (InvalidOperationException iEx)
+            {
+
+            }
+            catch (Exception ex)
+            {
+
+
+            }
+            return string.Empty;
+
+            
+        }
+        //private string RunProcess()
+        //{
+        //    var process = new System.Diagnostics.Process();
+        //    const int PROCESS_TIMEOUT = 6000;
+        //    var output = string.Empty;
+        //    try
+        //    {
+        //        var outputBuilder = new StringBuilder();
+        //        ProcessStartInfo processStartInfo;
+
+        //        processStartInfo = new ProcessStartInfo();
+        //        processStartInfo.CreateNoWindow = true;
+
+        //        processStartInfo.RedirectStandardOutput = true;
+        //        processStartInfo.RedirectStandardInput = true;
+        //        processStartInfo.RedirectStandardError = true;
+
+        //        processStartInfo.UseShellExecute = false;
+
+
+        //        //processStartInfo.FileName = _commandLineModels.Command;
+        //        //if (!string.IsNullOrEmpty(_commandLineModels.Arguments))
+        //        //{
+        //        //    processStartInfo.Arguments = _commandLineModels.Arguments;
+        //        //}
+
+        //        process.StartInfo = processStartInfo;
+        //        // enable raising events because Process does not raise events by default
+        //        process.EnableRaisingEvents = true;
+        //        // attach the event handler for OutputDataReceived before starting the process
+        //        process.OutputDataReceived += (sender, eventArgs) => outputBuilder.AppendLine(eventArgs.Data);
+        //        process.ErrorDataReceived += (sender, eventArgs) => outputBuilder.AppendLine(eventArgs.Data);
+        //        // start the process
+        //        // then begin asynchronously reading the output
+        //        // then wait for the process to exit
+        //        // then cancel asynchronously reading the output
+        //        process.Start();
+        //        process.BeginOutputReadLine();
+        //        process.BeginErrorReadLine();
+        //        process.WaitForExit();
+        //        process.CancelOutputRead();
+
+
+        //        output = "";
+        //        //var processExited = process.WaitForExit(PROCESS_TIMEOUT);
+        //        //if (processExited == false) // we timed out...
+        //        //{
+        //        //    process.Kill();
+        //        //    throw new Exception("ERROR: Process took too long to finish");
+        //        //}
+        //        //else if (process.ExitCode != 0)
+        //        //{
+        //        //    output = outputBuilder.ToString();
+        //        //    var prefixMessage = "";
+
+        //        //    throw new Exception($"Process exited with non-zero exit code of: { process.ExitCode}{Environment.NewLine} Output from process: {outputBuilder}");
+        //        //}
+        //        output = outputBuilder.ToString();
+
+        //        return output;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Console.WriteLine(e.Message);
+        //    }
+        //    finally
+        //    {
+        //        process.Close();
+        //    }
+        //    return output;
+        //}
+        private string RunProcessForSystemCommand()
+        {
+            var fileName = Path.GetTempFileName() + ".bat";
+            //To create a batch file
+            using(var sw = new StreamWriter(fileName))
+            {
+                foreach(var model in _commandLineModels)
+                {
+                    sw.WriteLine($"{model.Command} {model.Arguments}");
+                }
+            }
+
+            var newCommand = new CommandExecutionParamModel();
+            newCommand.Command = fileName;
+
+            //Reset the fileName with batch file name.
+            return RunSingleProcess(newCommand);
+        }
+        private string RunSingleProcess(CommandExecutionParamModel model)
         {
             var process = new System.Diagnostics.Process();
             const int PROCESS_TIMEOUT = 6000;
@@ -70,22 +226,19 @@ namespace SendFire.Common.Process
             try
             {
                 var outputBuilder = new StringBuilder();
-                ProcessStartInfo processStartInfo;
 
-                processStartInfo = new ProcessStartInfo();
-                processStartInfo.CreateNoWindow = true;
-
-                processStartInfo.RedirectStandardOutput = true;
-                processStartInfo.RedirectStandardInput = true;
-                processStartInfo.RedirectStandardError = true;
-
-                processStartInfo.UseShellExecute = false;
-
-                processStartInfo.FileName = _commandLineModel.Command;
-                if (!string.IsNullOrEmpty(_commandLineModel.Arguments))
+                ProcessStartInfo processStartInfo = new ProcessStartInfo
                 {
-                    processStartInfo.Arguments = _commandLineModel.Arguments;
-                }
+                    CreateNoWindow = true,
+
+                    RedirectStandardOutput = true,
+                    RedirectStandardInput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    ErrorDialog = false,
+
+                    FileName = model.Command
+                };
 
                 process.StartInfo = processStartInfo;
                 // enable raising events because Process does not raise events by default
@@ -103,21 +256,6 @@ namespace SendFire.Common.Process
                 process.WaitForExit();
                 process.CancelOutputRead();
 
-
-                output = "";
-                //var processExited = process.WaitForExit(PROCESS_TIMEOUT);
-                //if (processExited == false) // we timed out...
-                //{
-                //    process.Kill();
-                //    throw new Exception("ERROR: Process took too long to finish");
-                //}
-                //else if (process.ExitCode != 0)
-                //{
-                //    output = outputBuilder.ToString();
-                //    var prefixMessage = "";
-
-                //    throw new Exception($"Process exited with non-zero exit code of: { process.ExitCode}{Environment.NewLine} Output from process: {outputBuilder}");
-                //}
                 output = outputBuilder.ToString();
 
                 return output;
@@ -132,19 +270,5 @@ namespace SendFire.Common.Process
             }
             return output;
         }
-        private string RunProcessForSystemCommand()
-        {
-            var fileName = Path.GetTempFileName() + ".bat";
-            //To create a batch file
-            var sw = new StreamWriter(fileName);
-            sw.WriteLine($"{_commandLineModel.Command} {_commandLineModel.Arguments}");
-            sw.Close();
-
-            //Reset the fileName with batch file name.
-            _commandLineModel.Command = fileName;
-            _commandLineModel.Arguments = string.Empty;
-            return RunProcess();
-        }
-       
     }
 }
