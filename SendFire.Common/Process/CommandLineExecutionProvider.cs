@@ -111,7 +111,7 @@ namespace SendFire.Common.Process
             }
             catch (InvalidOperationException iEx)
             {
-
+                throw;
             }
             catch (Exception ex)
             {
