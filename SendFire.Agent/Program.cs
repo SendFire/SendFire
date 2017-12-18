@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Text;
-using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using SendFire.Agent.Helpers;
-using SendFire.Common.ExtensionMethods;
-using SendFire.Common.Interfaces;
+using SendFire.Common.Environment;
 
 namespace SendFire.Agent
 {
@@ -13,79 +8,20 @@ namespace SendFire.Agent
     {
         static void Main(string[] args)
         {
-            var servicesConfiguration = new AgentServicesConfiguration();
-            var commandLineHelper = (ICommandLineHelper) null;
-            var logger = (ILogger)null;
-
             try
             {
+                var agentServiceFactory = new AgentServiceFactory();
+                var environmentManager = new EnvironmentManager();
                 // Base Application Services Configuration, wires up all DI of app.
-                servicesConfiguration.ConfigureServices(new ServiceCollection(), args);
+                agentServiceFactory.ConfigureServices(environmentManager, new ExecutionEnvironment(environmentManager), new ServiceCollection(), args);
 
-                commandLineHelper = servicesConfiguration.ServiceProvider.GetService<ICommandLineHelper>();
-                logger = servicesConfiguration.Logger;
-
-                var status = commandLineHelper.ValidateConfiguration();
-
-                Console.Title = commandLineHelper.AppTitle;
-                commandLineHelper.DisplayStartup(status);
-
-                switch(status)
-                {
-                    case ParseConfigurationStatus.DisplayHelp:
-                        Environment.ExitCode = 1;
-                        Thread.Sleep(500); // Allow NLog Console Logging.
-                        break;
-
-                    case ParseConfigurationStatus.ExecuteProgramAsConsole:
-                        //var reliabilityService = new freebyRunner(model);
-                        //reliabilityService.OnStartConsoleMode();
-
-                        //Console.WriteLine("Hit any key to stop");
-                        //Console.ReadKey();
-                        //Console.WriteLine("Key Registered, Stopping ....");
-
-                        //reliabilityService.OnStopConsoleMode();
-                        //Thread.Sleep(500); // Allow NLog Console Logging.
-                        break;
-
-                    case ParseConfigurationStatus.ExecuteProgramAsService:
-                        //var service = new ServiceBase[]
-                        //{
-                        //    new freebyRunner(model),
-                        //};
-                        //ServiceBase.Run(service);
-                        break;
-
-                    case ParseConfigurationStatus.InstallService:
-                        // TODO: Service Install.
-                        break;
-
-                    case ParseConfigurationStatus.UninstallService:
-                        // TODO: Service Uninstall.
-                        break;
-                }
+                agentServiceFactory.ValidateAndExecuteService();
             }
             catch (Exception ex)
             {
-                // Catastrophic failure of DI and configuration building, assume invalid configuration and display help.
-                if (commandLineHelper == null)
-                {
-                    commandLineHelper = new AgentCommandLineHelper(null);
-                }
-                var errorTitle = $"{commandLineHelper.AppBinaryName} Startup Exception!";
-
-                if (logger != null)
-                {
-                    logger.LogCritical(errorTitle, ex);
-                }
-                else
-                {
-                    Console.WriteLine(errorTitle);
-                    Console.WriteLine(ex.Message);
-                }
-                commandLineHelper.DisplayStartup(ParseConfigurationStatus.DisplayHelp);
-                Thread.Sleep(500); // Allow Console / Other Logging if its on a background thread.
+                // Catastrophic failure of some type as base should not pass exception out of itself.
+                Console.WriteLine("Application Framework Exception!");
+                Console.WriteLine(ex.Message);
             }
         }
     }

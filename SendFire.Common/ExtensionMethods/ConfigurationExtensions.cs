@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SendFire.Common.Configuration;
+using SendFire.Common.Interfaces;
 
 namespace SendFire.Common.ExtensionMethods
 {
@@ -32,33 +33,29 @@ namespace SendFire.Common.ExtensionMethods
         /// default configuration setup but adding special instructions later (like command lines).
         /// </summary>
         /// <param name="configBuilder"></param>
+        /// <param name="executionEnvironment"></param>
         /// <returns></returns>
-        public static IConfigurationBuilder AddDefaultConfiguration(this IConfigurationBuilder configBuilder)
+        public static IConfigurationBuilder AddDefaultConfiguration(this IConfigurationBuilder configBuilder, IExecutionEnvironment executionEnvironment)
         {
-            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-
-            if (environment.IsNullOrEmpty()) environment = "Production";
-
-            // TODO: Directory.GetCurrentDirectory() instead?
-            configBuilder.SetBasePath(AppContext.BaseDirectory)
+            configBuilder.SetBasePath(executionEnvironment.ServiceRootPath)
                 .AddJsonFile("appsettings.json", true, true)
                 .AddEnvironmentVariables();
 
-            if (environment.CompareNoCase("Development"))
+            if (executionEnvironment.IsDevelopment())
             {
-                var devAppSettingsFile = Path.Combine(AppContext.BaseDirectory, $"appsettings.{environment}.json");
+                var devAppSettingsFile = Path.Combine(AppContext.BaseDirectory, $"appsettings.{executionEnvironment.EnvironmentName}.json");
                 if (File.Exists(devAppSettingsFile)) configBuilder.AddJsonFile(devAppSettingsFile);
                 else
                 {
                     devAppSettingsFile = Path.Combine(AppContext.BaseDirectory,
-                        string.Format("..{0}..{0}..{0}", Path.DirectorySeparatorChar), $"appsettings.{environment}.json");
+                        string.Format("..{0}..{0}..{0}", Path.DirectorySeparatorChar), $"appsettings.{executionEnvironment.EnvironmentName}.json");
                     configBuilder.AddJsonFile(devAppSettingsFile, true);
                 }
             }
             else
             {
                 configBuilder
-                    .AddJsonFile($"appsettings.{environment}.json", true);
+                    .AddJsonFile($"appsettings.{executionEnvironment.EnvironmentName}.json", true);
             }
 
             return configBuilder;
@@ -68,10 +65,11 @@ namespace SendFire.Common.ExtensionMethods
         /// Add a default application configuration into dependency injection.
         /// </summary>
         /// <param name="services"></param>
-        public static IServiceCollection AddDefaultConfiguration(this IServiceCollection services)
+        /// <param name="executionEnvironment"></param>
+        public static IServiceCollection AddDefaultConfiguration(this IServiceCollection services, IExecutionEnvironment executionEnvironment)
         {
             services.Add(new ServiceDescriptor(typeof(IConfiguration),
-                provider => new ConfigurationBuilder().AddDefaultConfiguration().Build(),
+                provider => new ConfigurationBuilder().AddDefaultConfiguration(executionEnvironment).Build(),
                 ServiceLifetime.Singleton));
             return services;
         }
@@ -80,12 +78,16 @@ namespace SendFire.Common.ExtensionMethods
         /// Add a default application configuration into dependency injection including the command line.
         /// </summary>
         /// <param name="services"></param>
-        public static IServiceCollection AddDefaultConfiguration(this IServiceCollection services,
+        public static IServiceCollection AddDefaultConfiguration(this IServiceCollection services, 
+            IExecutionEnvironment executionEnvironment,
             string[] args,
             IDictionary<string, string> switchMappings = null)
         {
             services.Add(new ServiceDescriptor(typeof(IConfiguration),
-                provider => new ConfigurationBuilder().AddDefaultConfiguration().AddProperCommandLine(args, switchMappings).Build(),
+                provider => new ConfigurationBuilder()
+                    .AddDefaultConfiguration(executionEnvironment)
+                    .AddProperCommandLine(args, switchMappings)
+                    .Build(),
                 ServiceLifetime.Singleton));
             return services;
         }

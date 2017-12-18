@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SendFire.Common\SendFire.Common.csproj" />
+    <ProjectReference Include="..\SendFire.Service\SendFire.Service.csproj" />
   </ItemGroup>
 
 </Project>

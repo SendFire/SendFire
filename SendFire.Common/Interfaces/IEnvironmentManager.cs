@@ -1,8 +1,10 @@
-﻿namespace SendFire.Common.Interfaces
+﻿using System;
+
+namespace SendFire.Common.Interfaces
 {
     public interface IEnvironmentManager
     {
         string GetEnvironmentVariable(string variable);
-        void SetEnvironmentVariable(string variable, string value);
+        void SetEnvironmentVariable(string variable, string value, EnvironmentVariableTarget target);
     }
 }

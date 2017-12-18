@@ -7,9 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SendFire.Web", "SendFire.We
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SendFire.Common", "SendFire.Common\SendFire.Common.csproj", "{CD7501A7-F5EB-41D7-A803-A6C97B01F3A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SendFire.Agent", "SendFire.Agent\SendFire.Agent.csproj", "{EB91BBA8-5834-4DDD-91F1-30F19AB44953}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SendFire.Agent", "SendFire.Agent\SendFire.Agent.csproj", "{EB91BBA8-5834-4DDD-91F1-30F19AB44953}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SendFire.Common.Tests", "SendFire.Common.Tests\SendFire.Common.Tests.csproj", "{66DA19CA-F948-4B7E-A71A-3AF9AD06DB88}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SendFire.Common.Tests", "SendFire.Common.Tests\SendFire.Common.Tests.csproj", "{66DA19CA-F948-4B7E-A71A-3AF9AD06DB88}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SendFire.Service", "SendFire.Service\SendFire.Service.csproj", "{5E514C7D-70C3-447C-9D1F-12FC89F48105}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{66DA19CA-F948-4B7E-A71A-3AF9AD06DB88}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66DA19CA-F948-4B7E-A71A-3AF9AD06DB88}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66DA19CA-F948-4B7E-A71A-3AF9AD06DB88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E514C7D-70C3-447C-9D1F-12FC89F48105}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E514C7D-70C3-447C-9D1F-12FC89F48105}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E514C7D-70C3-447C-9D1F-12FC89F48105}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E514C7D-70C3-447C-9D1F-12FC89F48105}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
