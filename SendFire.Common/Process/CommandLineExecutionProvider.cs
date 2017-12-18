@@ -12,7 +12,7 @@ namespace SendFire.Common.Process
         public CommandLineExecutionProvider() {
            
         }
-        public string ProcessCommands(string[] commands, bool runAsBatch)
+        public string ProcessCommands(string[] commands, bool runAsBatch, int processTimeoutMs=0)
         {
             if (commands.Length < 1)
             {
@@ -21,11 +21,11 @@ namespace SendFire.Common.Process
             var commandLineModels = ParseCommands(commands);
             if (runAsBatch)
             {
-                return RunCommandsAsBatch(commandLineModels);
+                return RunCommandsAsBatch(commandLineModels, processTimeoutMs);
             }
             else
             {
-                return RunEachCommandAsProcess(commandLineModels);
+                return RunEachCommandAsProcess(commandLineModels, processTimeoutMs);
             }
         }
         private List<CommandExecutionParamModel> ParseCommands(string[] commands)
@@ -52,7 +52,7 @@ namespace SendFire.Common.Process
 
        
 
-        private string RunEachCommandAsProcess(List<CommandExecutionParamModel> commandLinemodels)
+        private string RunEachCommandAsProcess(List<CommandExecutionParamModel> commandLinemodels, int processTimeoutMs)
         {
             var processStartInfos = new List<ProcessStartInfo>();
             foreach(var command in commandLinemodels)
@@ -73,11 +73,11 @@ namespace SendFire.Common.Process
 
                 processStartInfos.Add(processStartInfo);
             }
-            return RunProcesses(processStartInfos);
+            return RunProcesses(processStartInfos, processTimeoutMs);
   
         }
 
-        private string RunProcesses(List<ProcessStartInfo> processStartInfos)
+        private string RunProcesses(List<ProcessStartInfo> processStartInfos, int processTimeoutMs)
         {
             var outputBuilder = new StringBuilder();
             try
@@ -102,7 +102,19 @@ namespace SendFire.Common.Process
                         process.Start();
                         process.BeginOutputReadLine();
                         process.BeginErrorReadLine();
-                        process.WaitForExit();
+                        if (processTimeoutMs > 0)
+                        {
+                            var processExited = process.WaitForExit(processTimeoutMs);
+                            if (!processExited)
+                            {
+                                process.Kill();
+                                throw new TimeoutException($"Process did not finish in {processTimeoutMs} ms.");
+                            }
+                        }
+                        else
+                        {
+                            process.WaitForExit();
+                        }
                         process.CancelOutputRead();
                     }
                 }
@@ -117,11 +129,9 @@ namespace SendFire.Common.Process
             {
                 throw;
             }
-            return string.Empty;
-
             
         }
-        private string RunCommandsAsBatch(List<CommandExecutionParamModel> commandLineModels)
+        private string RunCommandsAsBatch(List<CommandExecutionParamModel> commandLineModels, int processTimeoutMs)
         {
             var fileName = Path.GetTempFileName() + ".bat";
             var output = string.Empty;
@@ -139,11 +149,11 @@ namespace SendFire.Common.Process
                 var newCommand = new CommandExecutionParamModel();
                 newCommand.Command = fileName;
                 
-                output = RunSingleProcess(newCommand);
+                output = RunSingleProcess(newCommand, processTimeoutMs);
             }
             catch (Exception ex)
             {
-                throw
+                throw;
             }
             finally
             {
@@ -151,10 +161,9 @@ namespace SendFire.Common.Process
             }
             return output;
         }
-        private string RunSingleProcess(CommandExecutionParamModel model)
+        private string RunSingleProcess(CommandExecutionParamModel model, int processTimeoutMs)
         {
             var process = new System.Diagnostics.Process();
-            const int PROCESS_TIMEOUT = 6000;
             var output = string.Empty;
             try
             {
@@ -186,7 +195,19 @@ namespace SendFire.Common.Process
                 process.Start();
                 process.BeginOutputReadLine();
                 process.BeginErrorReadLine();
-                process.WaitForExit();
+                if(processTimeoutMs > 0)
+                {
+                   var processExited= process.WaitForExit(processTimeoutMs);
+                    if (!processExited)
+                    {
+                        process.Kill();
+                        throw new TimeoutException($"Process did not finish in {processTimeoutMs} ms.");
+                    }
+                }
+                else
+                {
+                    process.WaitForExit();
+                }
                 process.CancelOutputRead();
 
                 output = outputBuilder.ToString();
