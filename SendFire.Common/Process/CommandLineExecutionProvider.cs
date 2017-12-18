@@ -21,7 +21,7 @@ namespace SendFire.Common.Process
             var commandLineModels = ParseCommands(commands);
             if (runAsBatch)
             {
-                return RunProcessForSystemCommand(commandLineModels);
+                return RunCommandsAsBatch(commandLineModels);
             }
             else
             {
@@ -115,14 +115,13 @@ namespace SendFire.Common.Process
             }
             catch (Exception ex)
             {
-
-
+                throw;
             }
             return string.Empty;
 
             
         }
-        private string RunProcessForSystemCommand(List<CommandExecutionParamModel> commandLineModels)
+        private string RunCommandsAsBatch(List<CommandExecutionParamModel> commandLineModels)
         {
             var fileName = Path.GetTempFileName() + ".bat";
             var output = string.Empty;
@@ -144,7 +143,7 @@ namespace SendFire.Common.Process
             }
             catch (Exception ex)
             {
-
+                throw
             }
             finally
             {
@@ -196,13 +195,13 @@ namespace SendFire.Common.Process
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+               // Console.WriteLine(e.Message);
+                throw;
             }
             finally
             {
                 process.Close();
             }
-            return output;
         }
     }
 }
