@@ -124,7 +124,7 @@ namespace SendFire.Service.BaseClasses
             catch (Exception ex)
             {
                 var errorTitle = $"{iSendFireService.ApplicationName} Startup Exception!";
-                File.WriteAllText("C:\\SendFireServiceFactoryBase.err", ex.Message + Environment.NewLine + ex.StackTrace);
+                File.WriteAllText(".\\SendFireServiceFactoryBase.err", ex.Message + Environment.NewLine + ex.StackTrace);
                 // Catastrophic failure of DI and configuration building, display exception and shut down.
                 if (Logger != null)
                 {

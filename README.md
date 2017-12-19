@@ -46,3 +46,11 @@ SendFire DB and User Setup for Development
 
 ![SendFire User DB Access](./SendFire.Docs/images/3-SetupSQLExpressDBAccess.PNG)
 
+
+SendFire DB Migrations for Development
+------------------------------------------
+1. cd to SendFire.Common
+2. dotnet ef migrations add {MIGRATION-DESCRIPTION} -p .\ -o .\Data\Migrations
+4. dotnet ef database update 
+	(This command assumes you have appsettings.json with a SendFireDB ConnectionString to your database)
+	TODO: Figure out how to read this from the startup project.  The database update command doesn't take parameters

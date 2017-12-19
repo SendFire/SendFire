@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection.Metadata.Ecma335;
+using Hangfire;
 using Microsoft.Extensions.Logging;
 using SendFire.Common.CommandLine;
 using SendFire.Common.ExtensionMethods;
@@ -12,6 +13,7 @@ namespace SendFire.Agent
 {
     internal class AgentService : SendFireServiceBase
     {
+        private BackgroundJobServer _server;
         public override string GetHelpDescription() =>
             "This service acts as the SendFire Command processor, it can be setup to run for either the default queue (which is the fully qualified domain name of this computer) or a named queue defined at service installation. See the optional command line properties below for optional installation and uninstallation command settings.";
 
@@ -44,12 +46,12 @@ namespace SendFire.Agent
 
         public override void Start()
         {
-            File.Create("C:\\AgenService.Start.txt");
+            _server = new BackgroundJobServer();   
         }
 
         public override void Stop()
         {
-            File.Create("C:\\AgenService.Stop.txt");
+            _server.Dispose();
         }
     }
 }
