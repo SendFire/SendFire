@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Microsoft.Extensions.DependencyInjection;
 using SendFire.Common.Environment;
 
@@ -10,6 +11,7 @@ namespace SendFire.Agent
         {
             try
             {
+                //File.Create("C:\\GotThere.ProgramMain.txt");
                 var agentServiceFactory = new AgentServiceFactory();
                 var environmentManager = new EnvironmentManager();
                 // Base Application Services Configuration, wires up all DI of app.

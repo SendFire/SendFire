@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using SendFire.Common.ExtensionMethods;
 using Xunit;
 
@@ -62,5 +64,46 @@ namespace SendFire.Common.Tests.ExtensionMethods.StringExtensions
         {
             Assert.Equal(expected, !arg.IsFalse() && !arg.IsTrue());
         }
+
+        [Theory,
+            MemberData(nameof(SplitAtLinesTestData))]
+        public void SplitAtLines(string paragraph, int lineLength, string[] expectedOutput)
+        {
+            var lines = paragraph.SplitAtLines(lineLength).ToArray();
+            Assert.True(lines.Length == expectedOutput.Length, $"Output and expected output not the same number of lines {lines.Length} / {expectedOutput.Length}.");
+            for (var inc = 0; inc < expectedOutput.Length; inc++)
+            {
+                Assert.Equal(lines[inc], expectedOutput[inc]);
+            }
+        }
+
+        const string _sourceParagraph = @"""Now is the time for all good men to come to the aid of the party"" is a phrase first proposed as a typing drill by instructor Charles E.Weller; its use is recounted in his book The Early History of the Typewriter, p. 21 (1918).";
+
+        public static IEnumerable<object[]> SplitAtLinesTestData => new[]
+        {
+            new object[] {
+                _sourceParagraph,
+                40, 
+                new[] {
+                     //----------------------------------------
+                    @"""Now is the time for all good men to",
+                     @"come to the aid of the party"" is a",
+                      "phrase first proposed as a typing drill",
+                      "by instructor Charles E.Weller; its use",
+                      "is recounted in his book The Early",
+                      "History of the Typewriter, p. 21 (1918)." 
+                }
+            }, new object[]  {
+                _sourceParagraph,
+                60,
+                new[] {
+                    //------------------------------------------------------------
+                    @"""Now is the time for all good men to come to the aid of the",
+                    @"party"" is a phrase first proposed as a typing drill by",
+                     "instructor Charles E.Weller; its use is recounted in his",
+                     "book The Early History of the Typewriter, p. 21 (1918)."
+                }
+            }
+        };
     }
 }
