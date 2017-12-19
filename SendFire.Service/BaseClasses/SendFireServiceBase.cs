@@ -1,26 +1,30 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using DasMulli.Win32.ServiceUtils;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using SendFire.Common.Interfaces;
+using SendFire.Common.CommandLine;
+using SendFire.Common.ExtensionMethods;
 using SendFire.Service.Interfaces;
 
 namespace SendFire.Service.BaseClasses
 {
     public abstract class SendFireServiceBase : ISendFireService
     {
-        public string ApplicationName { get; set; } = Assembly.GetEntryAssembly().GetName().Name;
+        public string ApplicationName { get; } = Assembly.GetEntryAssembly().GetName().Name;
+
+        public string ServiceName { get; set; } = Assembly.GetEntryAssembly().GetName().Name;
 
         public string ApplicationVersion { get; } = Assembly.GetEntryAssembly().GetName().Version.ToString();
 
-        public abstract List<string> GetHelpInfo();
+        public abstract string GetHelpDescription();
 
-        public abstract Dictionary<string, string> GetSwitchMappings();
+        public abstract string GetServiceDisplayName();
+
+        public abstract string GetServiceDescription();
+
+        public abstract CommandCollection[] GetCommandLineCollections();
 
         public IServiceProvider ServiceProvider { get; private set; }
 
@@ -35,29 +39,49 @@ namespace SendFire.Service.BaseClasses
             Logger = serviceProvider.GetService<ILoggerFactory>().AddConsole(LogLevel.Debug, false).CreateLogger(ApplicationName);
         }
 
-        public abstract ValidateConfigurationStatus ValidateConfiguration();
-
-        public virtual void InstallAsService()
+        public BaseCommandArgumentSelected ValidateConfiguration()
         {
-            throw new NotImplementedException();
+            if (Configuration[BaseCommandArguments.Help].IsTrue()) return BaseCommandArgumentSelected.DisplayHelp;
+
+            var baseCommandStatus = BaseCommandArgumentSelected.ExecuteProgramAsService;
+
+            if (Configuration[BaseCommandArguments.RegisterService].IsTrue())
+                baseCommandStatus = BaseCommandArgumentSelected.RegisterService;
+            if (Configuration[BaseCommandArguments.UninstallService].IsTrue())
+                baseCommandStatus = BaseCommandArgumentSelected.UninstallService;
+            if (Configuration[BaseCommandArguments.ConsoleMode].IsTrue())
+                baseCommandStatus = BaseCommandArgumentSelected.ExecuteProgramAsConsole;
+
+            ValidateConfigurationForBaseCommand(baseCommandStatus);
+            return(baseCommandStatus);
         }
-        
-        public virtual void UninstallAsService()
+
+        /// <summary>
+        /// Anyone deriving from this method should throw when configuration is not valid for the given Base command option.
+        /// </summary>
+        public abstract void ValidateConfigurationForBaseCommand(BaseCommandArgumentSelected baseCommand);
+
+        public abstract void Start();
+
+        public void Start(string[] startupArguments, ServiceStoppedCallback serviceStoppedCallback)
         {
-            throw new NotImplementedException();
+            //File.Create("C:\\GotThere.SendFireServiceBase.txt");
+            try
+            {
+                Start();
+            }
+            catch (Exception exception)
+            {
+                Logger.LogCritical($"{ServiceName} Start threw an exception.", exception);
+                serviceStoppedCallback.Invoke();
+            }
         }
-
-        public abstract void StartAsService();
-
-        public abstract void StartAsConsole();
 
         public abstract void Stop();
 
-        public abstract void DisplayStartup(ValidateConfigurationStatus status);
-
-        public void UninstallService()
+        public virtual void UninstallService()
         {
-            throw new NotImplementedException();
+            
         }
     }
 }

@@ -47,6 +47,7 @@ namespace SendFire.Common.Tests.Configuration
         {
             //TODO - Proper .NET Core CommandLineConfigurationProvider has "strange" behavior, I copied and modified to expected behavior.
             var configuration = new ConfigurationBuilder().AddProperCommandLine(argsGiven, switchMappings).Build();
+            var dummy = expectedData;
             Assert.Null(configuration["IdontExist"]);
         }
 

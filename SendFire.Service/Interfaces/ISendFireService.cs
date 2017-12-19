@@ -1,33 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
+using DasMulli.Win32.ServiceUtils;
+using SendFire.Common.CommandLine;
 using SendFire.Common.Interfaces;
+using SendFire.Service.BaseClasses;
 
 namespace SendFire.Service.Interfaces
 {
-    public enum ValidateConfigurationStatus
-    {
-        DisplayHelp,
-        ExecuteProgramAsService,
-        ExecuteProgramAsConsole,
-        InstallService,
-        UninstallService
-    }
-
-    public interface ISendFireService
+    public interface ISendFireService : IWin32Service
     {
         #region Properties Provided by Service Instance
         
         /// <summary>
-        /// The name of the application. This property is automatically set by the host to the assembly containing the application entry point but can be modified
+        /// The name of the application. 
+        /// </summary>
+        string ApplicationName { get; }
+
+        /// <summary>
+        /// The name of the service when installed into the Service Control Manager. This property is automatically set by the host to the assembly containing the application entry point but can be modified
         /// by the service specific code to support multiple instances of the same service on the same box that perform different functions.
         /// </summary>
-        string ApplicationName { get; set; }
+        //string ServiceName { get; set; } <-- Defined by IWin32Service, same usage.
 
         string ApplicationVersion { get; }
 
-        List<string> GetHelpInfo();
+        string GetHelpDescription();
 
-        Dictionary<string, string> GetSwitchMappings();
+        string GetServiceDisplayName();
+
+        string GetServiceDescription();
+
+        CommandCollection[] GetCommandLineCollections();
 
         #endregion
 
@@ -48,20 +51,12 @@ namespace SendFire.Service.Interfaces
         /// information you wish to display to the user about what is invalid. Help will also be displayed.
         /// </summary>
         /// <returns></returns>
-        ValidateConfigurationStatus ValidateConfiguration();
+        BaseCommandArgumentSelected ValidateConfiguration();
+        
+        void Start();
 
-        /// <summary>
-        /// Logs startup information based upon passed configuration status.
-        /// </summary>
-        /// <param name="status"></param>
-        void DisplayStartup(ValidateConfigurationStatus status);
+        //void Stop(); <-- Defined by IWin32Service, same usage.
 
-        void InstallAsService();
         void UninstallService();
-
-        void StartAsService();
-        void StartAsConsole();
-
-        void Stop();
     }
 }
