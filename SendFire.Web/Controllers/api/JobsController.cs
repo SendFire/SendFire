@@ -25,18 +25,13 @@ namespace SendFire.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult Enqueue([FromBody]CommandRequest commandRequest) {
-            BackgroundJob.Enqueue(() => JobJob.DoJob(commandRequest.Command));
+        public IActionResult Enqueue([FromBody]CommandRequest commandRequest)
+        {
+            var jobs = new[] {commandRequest.Command};
+            BackgroundJob.Enqueue(() => new SendFire.Common.Process.CommandLineExecutionProvider().ProcessCommands(jobs, true, 0));
             return Json("Ok");
         }
 
-    }
-    [Queue("queue101")]
-    public static class JobJob {
-        public static string DoJob(string say) {
-            var test = "you don't " + say;
-            return test;
-        }
     }
 
     public class CommandRequest {
