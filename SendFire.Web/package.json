@@ -9,7 +9,8 @@
     "build:css": "node-sass ClientApp/app/scss/application.scss wwwroot/dist/application.css",
     "watch:css": "node-sass -w ClientApp/app/scss/application.scss wwwroot/dist/application.css",
     "watch:tsd": "webpack --config webpack.config.js --env.dev -w",
-    "run:local": "concurrently \"export ASPNETCORE_ENVIRONMENT=Local && dotnet watch run\" \"yarn build:tsd && yarn watch:tsd\" \" yarn watch:css\""
+    "watch": "concurrently \"build:tsd && watch:tsd\" \"watch:css\"",
+    "run:local": "concurrently \"export ASPNETCORE_ENVIRONMENT=Local && dotnet watch run\" \"yarn watch\""
   },
   "devDependencies": {
     "@angular/animations": "4.2.5",
