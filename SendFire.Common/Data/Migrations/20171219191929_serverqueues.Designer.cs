@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore.Storage.Internal;
 using SendFire.Common.Data;
 using System;
 
-namespace SendFire.Common.Data
+namespace SendFire.Common.Data.Migrations
 {
     [DbContext(typeof(SendFireContext))]
-    [Migration("20171219001307_serverqueue")]
-    partial class serverqueue
+    [Migration("20171219191929_serverqueues")]
+    partial class serverqueues
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

@@ -48,7 +48,7 @@ namespace SendFire.Web
 
             app.UseStaticFiles();
             app.UseHangfireDashboard();
-            app.UseHangfireServer();
+            // app.UseHangfireServer();
 
             app.UseMvc(routes =>
             {
