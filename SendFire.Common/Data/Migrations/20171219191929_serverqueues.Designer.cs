@@ -23,18 +23,18 @@ namespace SendFire.Common.Data.Migrations
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("SendFire.Common.Data.Models.ServerQueue", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Description");
+                b.Property<string>("Description");
 
-                    b.Property<string>("Queue");
+                b.Property<string>("Queue");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("ServerQueues");
-                });
+                b.ToTable("ServerQueues");
+            });
 #pragma warning restore 612, 618
         }
     }
