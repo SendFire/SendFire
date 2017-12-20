@@ -10,6 +10,7 @@ export class HomeComponent {
     constructor(private _jobService: JobService){
     }
     command:string = '';
+    queue:string = 'default';
     jobId:string = '';
     counts: any[] = [];
     dashboardInterval:any = null;
@@ -34,8 +35,10 @@ export class HomeComponent {
 
     enqueueCommand() {
         this.result = '';
-        this._jobService.runCommand(this.command).subscribe(data => {
-            this.command = '';
+        if(!this.command) {
+            return;
+        }
+        this._jobService.runCommand(this.queue, this.command).subscribe(data => {
             if (!data && !data.id) {
                 return;
             }  

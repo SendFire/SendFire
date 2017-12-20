@@ -53,7 +53,7 @@ export class TerminalComponent implements OnInit {
       }
       const typd = new Typed(`#msg${this._messages.length}`, {
         strings: [output],
-        typeSpeed: 1,
+        typeSpeed: 0,
         backSpeed: 0,
         loop: false,
         showCursor: false,
@@ -73,15 +73,17 @@ export class TerminalComponent implements OnInit {
   }
 
   fetchResult() {
-    console.log("calling")
     this._jobService.getResults(this._id).subscribe(results => {
         if(!results || !results.results || !results.results.Result) {
           this.addMessage('Processing');
           this.updateTerminal();
-          setTimeout(() => { console.log("setting call"); this.fetchResult() }, 5000);
+          setTimeout(() => { this.fetchResult() }, 5000);
           return;
         }
-        const result = results.results.Result.substr(1).slice(0, -1).replace(/\\\\/g, "\\").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/(?:\\[rn])+/g, "<br />");
+        const result = results.results.Result.substr(1).slice(0, -1)
+          .replace(/</g,"&lt;").replace(/>/g,"&gt;")
+          .replace(/(?:\\[rn])+/g, "<br />")
+          .replace(/\\\\/g, "\\");
         this.addMessage(result);
         this.updateTerminal();
 

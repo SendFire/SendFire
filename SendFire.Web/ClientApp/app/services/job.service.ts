@@ -19,8 +19,8 @@ export class JobService {
       .map((res:Response) => res.json())
   }
 
-  runCommand(cmd: string):Observable<any> {
-    return this._http.post(`${this._platformLocation.location.origin}/api/jobs/enqueue`, {command: cmd})
+  runCommand(queue: string, cmd: string):Observable<any> {
+    return this._http.post(`${this._platformLocation.location.origin}/api/jobs/enqueue`, {queue, command: cmd})
       .map((res:Response) => res.json())
   }
 

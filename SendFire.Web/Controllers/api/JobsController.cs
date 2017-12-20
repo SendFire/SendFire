@@ -28,7 +28,7 @@ namespace SendFire.Web.Controllers
         public IActionResult Enqueue([FromBody]CommandRequest commandRequest)
         {
             var jobs = new[] {commandRequest.Command};
-            var id = BackgroundJob.EnqueueTo("default", () => new SendFire.Common.Process.CommandLineExecutionProvider().ProcessCommands(jobs, true, 0));
+            var id = BackgroundJob.EnqueueTo(commandRequest.Queue, () => new SendFire.Common.Process.CommandLineExecutionProvider().ProcessCommands(jobs, true, 0));
             return Json(new {
                 id = id
             });
@@ -38,5 +38,6 @@ namespace SendFire.Web.Controllers
 
     public class CommandRequest {
         public string Command {get;set;}
+        public string Queue {get;set;}
     }
 }
