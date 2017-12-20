@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 
 namespace SendFire.Common.Interfaces
 {
@@ -6,5 +7,6 @@ namespace SendFire.Common.Interfaces
     {
         string GetEnvironmentVariable(string variable);
         void SetEnvironmentVariable(string variable, string value, EnvironmentVariableTarget target);
+        OSPlatform GetOSPlatform();
     }
 }

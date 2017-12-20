@@ -3,6 +3,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
+using SendFire.Common.Interfaces;
+using System.Runtime.InteropServices;
+using SendFire.Common.Environment;
 
 namespace SendFire.Common.Process
 {
@@ -133,13 +136,17 @@ namespace SendFire.Common.Process
         }
         private string RunCommandsAsBatch(List<CommandExecutionParamModel> commandLineModels, int processTimeoutMs)
         {
-            var fileName = Path.GetTempFileName() + ".bat";
+            var fileModel = GetExecuteBatchFileModel();
             var output = string.Empty;
             try
             {
                 //To create a batch file
-                using (var sw = new StreamWriter(fileName))
+                using (var sw = new StreamWriter(fileModel.FileName))
                 {
+                    if (fileModel.IsUnixOS)
+                    {
+                        sw.WriteLine("#!/bin/bash");
+                    }
                     foreach (var model in commandLineModels)
                     {
                         sw.WriteLine($"{model.Command} {model.Arguments}");
@@ -147,7 +154,7 @@ namespace SendFire.Common.Process
                 }
                 //Reset the command with batch file name.
                 var newCommand = new CommandExecutionParamModel();
-                newCommand.Command = fileName;
+                newCommand.Command = fileModel.FileName;
                 
                 output = RunSingleProcess(newCommand, processTimeoutMs);
             }
@@ -157,9 +164,31 @@ namespace SendFire.Common.Process
             }
             finally
             {
-                File.Delete(fileName);
+                File.Delete(fileModel.FileName);
             }
             return output;
+        }
+        private CommandExecutionFileModel GetExecuteBatchFileModel()
+        {
+            var model = new CommandExecutionFileModel();
+            var environment = new EnvironmentManager();
+            var osPlatForm = environment.GetOSPlatform();
+
+            var extension = "";
+            if(osPlatForm == OSPlatform.Windows)
+            {
+                extension = ".bat";
+                model.IsUnixOS = false;
+            }
+
+            if(osPlatForm == OSPlatform.Linux || osPlatForm == OSPlatform.OSX)
+            {
+                extension = ".sh";
+                model.IsUnixOS = true;
+            }
+            model.FileName = $"{Path.GetTempFileName()}{extension}";
+            return model;
+            
         }
         private string RunSingleProcess(CommandExecutionParamModel model, int processTimeoutMs)
         {
