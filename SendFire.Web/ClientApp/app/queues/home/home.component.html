@@ -6,7 +6,7 @@
 </div>
 <div class="enqueue-command-container">
     <label>Command</label>
-    <textarea  name="command" [(ngModel)]="command"></textarea>
+    <textarea class="form-control"  name="command" [(ngModel)]="command"></textarea>
     <button class="btn btn-default" (click)="enqueueCommand($event)">Enqueue</button> 
 </div>
 <sf-terminal *ngIf="showTerminal" [id]="jobId"></sf-terminal>
