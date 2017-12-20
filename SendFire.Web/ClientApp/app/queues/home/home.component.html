@@ -1,18 +1,23 @@
-<div class="counts-container" >
+<div class="counts-container">
     <div class="count" *ngFor="let count of counts">
         <label>{{count.label}}</label>
         {{count.count}}
     </div>
 </div>
-<sf-terminal *ngIf="showTerminal" [id]="jobId"></sf-terminal>
+<sf-terminal [id]="jobId"></sf-terminal>
 <div class="enqueue-command-container">
-    <label>Command</label>
-    <select [(ngModel)]="queue">
-        <option value="default">Default</option>
-        <option value="queue101">queue101</option>
-    </select>
-    <textarea class="form-control"  name="command" [(ngModel)]="command"></textarea>
-    <button class="btn btn-default" (click)="enqueueCommand($event)">Enqueue</button> 
+    <div class="form-group">
+        <label>Queue</label>
+        <select [(ngModel)]="queue" class="form-control">
+            <option value="default">Default</option>
+            <option value="queue101">queue101</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Command</label>
+        <textarea class="form-control" name="command" [(ngModel)]="command"></textarea>
+    </div>
+    <button class="btn btn-default" (click)="enqueueCommand($event)">Enqueue</button>
 </div>
 
 <!-- <div class="enqueue-command-container">
@@ -20,6 +25,3 @@
     <input type="text" name="jobId" [(ngModel)]="jobId" />
     <button class="btn btn-default" (click)="fetchResult($event)">Fetch</button> 
 </div> -->
-
-
-

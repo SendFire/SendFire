@@ -1,5 +1,5 @@
 .navbar {
-    background: url("/images/logo.png") no-repeat 0 0 #323b44;
+    background: url("/images/logo.png") no-repeat 15px 0 #323b44;
     padding-left: 60px;
     border: none;
     border-radius: 0;
@@ -7,5 +7,6 @@
         font-family: 'Spectral SC', serif;
         color: #fff;
         font-size: 1.8em;
+        padding-top: 20px;
     }
 }
