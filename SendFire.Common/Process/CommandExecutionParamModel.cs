@@ -7,4 +7,10 @@ namespace SendFire.Common.Process
         public string Arguments { get; set; }
        
     }
+
+    public class CommandExecutionFileModel
+    {
+        public string FileName { get; set; }
+        public bool IsUnixOS { get; set; }
+    }
 }
