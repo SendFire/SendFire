@@ -14,6 +14,7 @@ export class HomeComponent {
     counts: any[] = [];
     dashboardInterval:any = null;
     result:string = '';
+    showTerminal: boolean = false;
     ngOnInit() {
         this.updateDashboardCounts()
         this.dashboardInterval = window.setInterval(() => {
@@ -40,21 +41,15 @@ export class HomeComponent {
             }  
 
             this.jobId = data.id;
+            this.fetchResult();
                     
         });
     }
 
     fetchResult() {
-        this._jobService.getResults(this.jobId).subscribe(results => {
-            if(!results && !results.results && !results.results.Result) {
-                this.result = 'Not Ready';
-                return;
-            }
-            this.result = results.results.Result.substr(1).slice(0, -1).replace(/(?:\\[rn])+/g, "<br />");
-            //console.log(results.results.Result);
-        }, () => {
-            this.result = '';
-        })  
+        this.showTerminal = true;
     }
+
+    
     
 }

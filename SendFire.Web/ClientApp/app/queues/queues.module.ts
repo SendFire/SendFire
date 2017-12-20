@@ -11,6 +11,7 @@ import { FetchDataComponent } from './fetchdata/fetchdata.component';
 import { HomeComponent } from './home/home.component';
 import { Accordion, AccordionGroup } from '../components/accordion/accordion.component';
 import { DetailsComponent } from './details/details.component';
+import { TerminalComponent } from './terminal/terminal.component';
 
 @NgModule({
   imports: [
@@ -26,7 +27,8 @@ import { DetailsComponent } from './details/details.component';
       HomeComponent,
       Accordion,
       AccordionGroup,
-      DetailsComponent
+      DetailsComponent,
+      TerminalComponent
   ]
 })
 export class QueuesModule { }

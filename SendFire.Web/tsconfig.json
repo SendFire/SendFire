@@ -7,6 +7,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "skipDefaultLibCheck": true,
+    "noImplicitAny": false,
     "skipLibCheck": true, // Workaround for https://github.com/angular/angular/issues/17863. Remove this if you upgrade to a fixed version of Angular.
     "strict": true,
     "lib": [ "es6", "dom" ],
