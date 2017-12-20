@@ -4,9 +4,16 @@
         {{count.count}}
     </div>
 </div>
+<pre *ngIf="result"><code [innerHTML]="result"></code></pre>
+<div class="enqueue-command-container">
+    <label>Fetch Result</label>
+    <input type="text" name="jobId" [(ngModel)]="jobId" />
+    <button class="btn btn-default" (click)="fetchResult($event)">Fetch</button> 
+</div>
 
 <div class="enqueue-command-container">
     <label>Command</label>
     <input type="text" name="command" [(ngModel)]="command" />
     <button class="btn btn-default" (click)="enqueueCommand($event)">Enqueue</button> 
 </div>
+

@@ -28,8 +28,10 @@ namespace SendFire.Web.Controllers
         public IActionResult Enqueue([FromBody]CommandRequest commandRequest)
         {
             var jobs = new[] {commandRequest.Command};
-            BackgroundJob.Enqueue(() => new SendFire.Common.Process.CommandLineExecutionProvider().ProcessCommands(jobs, true, 0));
-            return Json("Ok");
+            var id = BackgroundJob.Enqueue(() => new SendFire.Common.Process.CommandLineExecutionProvider().ProcessCommands(jobs, true, 0));
+            return Json(new {
+                id = id
+            });
         }
 
     }

@@ -21,11 +21,17 @@ export class JobService {
 
   runCommand(cmd: string):Observable<any> {
     return this._http.post(`${this._platformLocation.location.origin}/api/jobs/enqueue`, {command: cmd})
+      .map((res:Response) => res.json())
   }
 
   getDetails(id: string) {
     return this._http.get(`${this._platformLocation.location.origin}/api/job/details/${id}`)
-    .map((res:Response) => res.json())
+      .map((res:Response) => res.json())
+  }
+
+  getResults(id: string) {
+    return this._http.get(`${this._platformLocation.location.origin}/api/job/results/${id}`)
+      .map((res:Response) => res.json())
   }
 
 }

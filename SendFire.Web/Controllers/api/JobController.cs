@@ -23,6 +23,17 @@ namespace SendFire.Web.Controllers
             var details = monitor.JobDetails(id);
             return Json(new JobDetailsModel(id, details));
         }
+
+        public IActionResult Results(string id)
+        {
+            Hangfire.Storage.IMonitoringApi monitor = JobStorage.Current.GetMonitoringApi();
+            var details = monitor.JobDetails(id);
+            return Json(new 
+            {
+                State = details.History.First().StateName,
+                Results = details.History.First().Data
+            });
+        }
     }
 
     public class JobDetailsModel {
