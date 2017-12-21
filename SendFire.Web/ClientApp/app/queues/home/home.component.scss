@@ -22,5 +22,12 @@
 .enqueue-command-container {
     margin: .5em;
     padding: 1em;
-    border: 1px solid #323b44;
+    background-color: #ffffff;
+    border-color: #e7eaec;
+    border-image: none;
+    border-style: solid solid none;
+    border-width: 2px 0 0;
+    color: inherit;
+    margin-bottom: 2em;
+    padding: 15px 15px 7px;
 }
