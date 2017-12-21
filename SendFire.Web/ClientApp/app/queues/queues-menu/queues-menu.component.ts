@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 @Component({
     selector: 'queues-menu',
     templateUrl: './queues-menu.component.html',
-    styleUrls: ['./queues-menu.component.css']
+    styleUrls: ['./queues-menu.component.scss']
 })
 export class QueuesMenuComponent {
 
