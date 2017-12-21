@@ -55,6 +55,11 @@ export class HomeComponent {
         });
     }
 
+    clear() {
+        this.command = '';
+        this.jobId = '0';
+    }
+
     fetchResult() {
         this.showTerminal = true;
     }

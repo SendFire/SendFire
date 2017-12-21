@@ -19,7 +19,11 @@ export class TerminalComponent implements OnInit {
   @Input()
   set id(passedId) {
     this._id = passedId;
-    if(!this._id) {return;}
+    if(!this._id) {
+      this._id = '';
+      this.messageList = [];
+      return;
+    }
     this.fetchResult();
   };
 
@@ -43,9 +47,11 @@ export class TerminalComponent implements OnInit {
   }
 
   addProcessing() {
-    let processing = this._messages[0];
-    if (!processing) {
+    let processing = this._messages[this._messages.length - 1];
+    if (!processing || !processing.startsWith('Running')) {
       this.addMessage("Running...");
+    } else {
+      this._messages[this._messages.length - 1] = processing + ".";
     }
   }
 
@@ -107,20 +113,22 @@ export class TerminalComponent implements OnInit {
   }
 
   fetchResult() {
-    
+    if(!this._id || this._id === '0') {return;}
     this._jobService.getResults(this._id).subscribe(results => {
-      if (!results || !results.results || !results.results.Result) {
+      if (!results || results.state !== 'Succeeded') {
         this.addProcessing();
         this.updateTerminal();
         setTimeout(() => { this.fetchResult() }, 5000);
         return;
       }
+      
       const result = results.results.Result.substr(1).slice(0, -1)
         .replace(/</g, "&lt;").replace(/>/g, "&gt;")
         .replace(/(?:\\[rn])+/g, "<br />")
         .replace(/\\\\/g, "\\");
       this.addMessage(result);
       this.updateTerminal();
+      
 
     }, () => {
 
