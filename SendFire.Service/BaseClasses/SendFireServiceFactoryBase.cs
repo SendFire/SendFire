@@ -124,12 +124,14 @@ namespace SendFire.Service.BaseClasses
             catch (Exception ex)
             {
                 var errorTitle = $"{iSendFireService.ApplicationName} Startup Exception!";
-                File.WriteAllText(".\\SendFireServiceFactoryBase.err", ex.Message + Environment.NewLine + ex.StackTrace);
+                //File.WriteAllText(".\\SendFireServiceFactoryBase.err", ex.Message + Environment.NewLine + ex.StackTrace);
                 // Catastrophic failure of DI and configuration building, display exception and shut down.
                 if (Logger != null)
                 {
                     DisplayStartup(iSendFireService, BaseCommandArgumentSelected.DisplayHelp);
+                    // TODO: Need a better logger than the base logger.
                     Logger.LogCritical(errorTitle, ex);
+                    Logger.LogCritical(ex.Message);
                     Thread.Sleep(500); // Allow Console / Other Logging if its on a background thread.
                 }
                 else
