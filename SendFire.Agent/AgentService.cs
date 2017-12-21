@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection.Metadata.Ecma335;
+using System.Text.RegularExpressions;
 using Hangfire;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SendFire.Common.CommandLine;
 using SendFire.Common.ExtensionMethods;
+using SendFire.Common.Interfaces;
 using SendFire.Service.BaseClasses;
 using SendFire.Service.Interfaces;
 
@@ -13,6 +16,7 @@ namespace SendFire.Agent
 {
     internal class AgentService : SendFireServiceBase
     {
+        public string QueueName { get; private set; }
         private BackgroundJobServer _server;
         public override string GetHelpDescription() =>
             "This service acts as the SendFire Command processor, it can be setup to run for either the default queue (which is the fully qualified domain name of this computer) or a named queue defined at service installation. See the optional command line properties below for optional installation and uninstallation command settings.";
@@ -41,12 +45,20 @@ namespace SendFire.Agent
         
         public override void ValidateConfigurationForBaseCommand(BaseCommandArgumentSelected baseCommand)
         {
-            if (!Configuration["qn"].IsNullOrEmpty()) ServiceName = $"{ApplicationName} ({Configuration["qn"]})";
+            if (!Configuration["qn"].IsNullOrEmpty()) QueueName = Configuration["qn"].ToLower();
+            else QueueName = ServiceProvider.GetService<IEnvironmentManager>().GetMachineName().ToLower().Replace("-", "_");
+
+            if (!Regex.IsMatch(QueueName, @"^[a-z0-9_]+$"))
+            {
+                throw new ArgumentException($"The queue name must consist of lowercase letters, digits and underscore characters only. Given: '{QueueName}'.");
+            }
+            ServiceName = $"{ApplicationName} ({QueueName})";
         }
 
         public override void Start()
         {
-            _server = new BackgroundJobServer();   
+            var jobServerOptions = new BackgroundJobServerOptions {Queues = new string[] {QueueName}};
+            _server = new BackgroundJobServer(jobServerOptions);   
         }
 
         public override void Stop()

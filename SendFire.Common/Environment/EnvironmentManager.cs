@@ -27,6 +27,11 @@ namespace SendFire.Common.Environment
             return osPlatform;
         }
 
+        public string GetMachineName()
+        {
+            return System.Environment.MachineName;
+        }
+
         public void SetEnvironmentVariable(string variable, string value, EnvironmentVariableTarget target)
         {
             System.Environment.SetEnvironmentVariable(variable, value, target);
