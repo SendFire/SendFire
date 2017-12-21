@@ -37,16 +37,19 @@ namespace SendFire.Web.Controllers
         }
         public QueueModel(ServerQueue model) {
             Name = model.Description;
+            Queue = model.Queue;
             JobCount = 0;
             NextJobs = new List<JobModel>();
         }
 
         public QueueModel(QueueWithTopEnqueuedJobsDto model) {
             Name = model.Name;
+            
             JobCount = model.Length;
             NextJobs = model.FirstJobs.Select(j => new JobModel(j.Key, j.Value));
         }
         public string Name {get;set;}
+        public string Queue {get;set;}
         public long JobCount {get;set;}
         public IEnumerable<JobModel> NextJobs {get;set;}
     }

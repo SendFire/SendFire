@@ -10,7 +10,7 @@
         <label>Queue</label>
         <select [(ngModel)]="queue" class="form-control">
             <option value="default">Default</option>
-            <option value="queue101">queue101</option>
+            <option [value]="q.queue" *ngFor="let q of queues">{{q.name}}</option>
         </select>
     </div>
     <div class="form-group">

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { JobService } from '../../services/job.service';
+import { QueuesService } from '../../services/queues.service';
 
 @Component({
     selector: 'home',
@@ -7,7 +8,7 @@ import { JobService } from '../../services/job.service';
     styleUrls: ['./home.component.scss']
 })
 export class HomeComponent {
-    constructor(private _jobService: JobService){
+    constructor(private _jobService: JobService, private _queuesService: QueuesService){
     }
     command:string = '';
     queue:string = 'default';
@@ -16,11 +17,16 @@ export class HomeComponent {
     dashboardInterval:any = null;
     result:string = '';
     showTerminal: boolean = false;
+    queues: any[] = [];
     ngOnInit() {
         this.updateDashboardCounts()
         this.dashboardInterval = window.setInterval(() => {
             this.updateDashboardCounts();
         }, 2000); 
+
+        this._queuesService.getQueues().subscribe(data => {
+            this.queues = data;
+        });
     }
 
     updateDashboardCounts() {
