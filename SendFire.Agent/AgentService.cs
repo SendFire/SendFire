@@ -21,8 +21,9 @@ namespace SendFire.Agent
         public override string GetHelpDescription() =>
             "This service acts as the SendFire Command processor, it can be setup to run for either the default queue (which is the fully qualified domain name of this computer) or a named queue defined at service installation. See the optional command line properties below for optional installation and uninstallation command settings.";
 
-        // TODO - Add Queue name as a part of this too.
-        public override string GetServiceDisplayName() => "SendFire Command Processor Agent";
+        private const string _baseDisplayName = "SendFire Command Processor Agent";
+        private string _displayName = _baseDisplayName;
+        public override string GetServiceDisplayName() => _displayName;
 
         public override string GetServiceDescription() =>
             "This service acts as the SendFire Command processor, it can be setup to run for either the default queue (which is the fully qualified domain name of this computer) or a named queue defined at service installation.";
@@ -53,6 +54,7 @@ namespace SendFire.Agent
                 throw new ArgumentException($"The queue name must consist of lowercase letters, digits and underscore characters only. Given: '{QueueName}'.");
             }
             ServiceName = $"{ApplicationName} ({QueueName})";
+            _displayName = $"{_baseDisplayName} ({QueueName})";
         }
 
         public override void Start()
