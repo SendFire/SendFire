@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SendFire.Common.Data;
+using SendFire.Common.Data.Implementations;
 
 namespace SendFire.Web
 {
@@ -28,6 +29,7 @@ namespace SendFire.Web
             services.AddMvc();
             services.AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("SendFireDB")));
             services.AddDbContext<SendFireContext>(options => options.UseSqlServer(Configuration.GetConnectionString("SendFireDB")));
+            services.AddTransient<ServerQueueData>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
