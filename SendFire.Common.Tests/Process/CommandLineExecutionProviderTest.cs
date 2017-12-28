@@ -72,6 +72,25 @@ namespace SendFire.Common.Tests.Process
             Exception ex = Assert.Throws<TimeoutException>(() => commandLineExecution.ProcessCommands(commands, runAsBatch, timeoutMs));
             Assert.Equal($"Process did not finish in {timeoutMs} ms.", ex.Message);
         }
+        [Theory,
+        InlineData(new string[] { "echo hello", "cd /tmp", "mkdir helloboomboom" }, true)]
+        public void ProcessCommandForUnix(string[] commands, bool runAsBatch)
+        {
+            var commandLineExecution = new CommandLineExecutionProvider();
+            var timeoutMs = 20000;
+            var output = commandLineExecution.ProcessCommands(commands, runAsBatch, timeoutMs);
+            Assert.NotEmpty(output);
+        }
+        [Theory,
+          InlineData("mkdir ./temp33")]
+        public void ProcessCommandForUnix2(string command)
+        {
+            var commandLineExecution = new CommandLineExecutionProvider();
+            var output = "";
+            commandLineExecution.ExecuteUnixCommand(command);
+            Assert.Empty(output);
+        }
+
         public static IEnumerable<object[]> SystemCommandArguments()
         {
             var systemCommandArgument =new[]
