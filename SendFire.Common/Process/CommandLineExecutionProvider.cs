@@ -155,7 +155,14 @@ namespace SendFire.Common.Process
                 //Reset the command with batch file name.
                 var newCommand = new CommandExecutionParamModel();
                 newCommand.Command = fileModel.FileName;
-                
+
+                //To change the file permission on unix box
+                if (fileModel.IsUnixOS)
+                {
+
+                    var command = "chmod 755 " + fileModel.FileName;
+                    ExecuteUnixCommand(command);
+                }
                 output = RunSingleProcess(newCommand, processTimeoutMs);
             }
             catch (Exception ex)
@@ -164,6 +171,7 @@ namespace SendFire.Common.Process
             }
             finally
             {
+                //Console.WriteLine("filename" + fileModel.FileName);
                 File.Delete(fileModel.FileName);
             }
             return output;
@@ -252,6 +260,27 @@ namespace SendFire.Common.Process
             {
                 process.Close();
             }
+        }
+
+        public void ExecuteUnixCommand(string cmd)
+        {
+            var escapedArgs = cmd.Replace("\"", "\\\"");
+
+            var process = new System.Diagnostics.Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    FileName = "/bin/bash",
+                    Arguments = $"-c \"{escapedArgs}\""
+                }
+            };
+
+            process.Start();
+            process.WaitForExit();
         }
     }
 }
